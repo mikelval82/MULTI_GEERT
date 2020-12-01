@@ -8,7 +8,6 @@
 from multiprocessing import Process, Value
 from multiprocessing.managers import BaseManager
 from DATA_MANAGER.EEG_data_manager import EEG_data_manager
-from DATA_MANAGER.VIDEO_data_manager import VIDEO_data_manager
 import numpy as np
 #import time
 #from datetime import datetime
@@ -32,15 +31,11 @@ class data_acquirer(Process):
     def call_method(self, o, name, inlet, type):
         if type =='EEG':
             return getattr(o, name)(num_channels=inlet.channel_count, srate=inlet.info().nominal_srate())
-        elif type == 'video':
-            return getattr(o, name)()
         
     def set_up(self):
         for index, inlet in enumerate(self.inlets):
             if inlet.info().type() == 'EEG':
                 self.MyManager.register('buffer_'+str(index), EEG_data_manager)
-            elif inlet.info().type() == 'video':
-                self.MyManager.register('buffer_'+str(index), VIDEO_data_manager)
             # ---- set buffers -----
             self.buffers['inlet'].append( inlet ) 
             self.buffers['buffer'].append ( self.call_method(self.Manager(), 'buffer_'+str(index), inlet, inlet.info().type()) )

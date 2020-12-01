@@ -11,7 +11,6 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from QTDesigner.M_GEERT_QT import Ui_M_GEERT as UI
 from GUI.EEG_monitor_wrapper import EEG_monitor_wrapper 
-from GUI.VIDEO_monitor_wrapper import VIDEO_monitor_wrapper 
 from UTILITIES.GLOBAL import constants
 from LOGGING.logger import logger
 from COM.trigger_server_2 import trigger_server
@@ -80,11 +79,6 @@ class GUI(QMainWindow, UI):
                     self.monitors.append( EEG_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
                                                               self.acq.buffers['counter'][i], self.acq.buffers['streaming'][i], 
                                                               self.acq.buffers['active'][i]) )    
-                elif self.acq.buffers['inlet'][i].info().type() == 'video':
-                    print('paso')
-                    self.monitors.append( VIDEO_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
-                                                              self.acq.buffers['counter'][i], self.acq.buffers['streaming'][i], 
-                                                              self.acq.buffers['active'][i]) )
         else:
             #---- kill data acquirer and close all activef monitors -----
             for monitor in self.monitors:
