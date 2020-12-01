@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-@author: %(Mikel Val Calvo)s
-@email: %(mikel1982mail@gmail.com)
-@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED))
+@author: %(Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos)
+@email: %(mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com)
+@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
 @DOI: 
 """
 import os
@@ -10,8 +10,8 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from QTDesigner.M_GEERT_QT import Ui_M_GEERT as UI
-from multiprocessing import Value
 from GUI.EEG_monitor_wrapper import EEG_monitor_wrapper 
+from GUI.VIDEO_monitor_wrapper import VIDEO_monitor_wrapper 
 from UTILITIES.GLOBAL import constants
 from LOGGING.logger import logger
 from COM.trigger_server_2 import trigger_server
@@ -37,15 +37,12 @@ class GUI(QMainWindow, UI):
         self.trigger_server_activated = False
         #-------- connections ----
         self.Experiment_btn.clicked.connect(self.saveFileDialog)
-        self.MainRecord_btn.clicked.connect(lambda: self.main_recording('RECORD'))
-        
+        self.MainRecord_btn.clicked.connect(self.main_recording)
         self.TCPIP_checkBox.toggled.connect(self.launch_trigger_server)
         self.Host_LineEdit.textChanged.connect(lambda: self.constants.update('ADDRESS', self.Host_LineEdit.text()))
         self.Port_LineEdit.textChanged.connect(lambda: self.constants.update('PORT', self.Port_LineEdit.text()))
-        
         self.ResolveStreaming_btn.clicked.connect(self.launch_lsl)
         self.Activate_btn.clicked.connect(self.launch_monitor)
-        
         self.Run_btn.clicked.connect(lambda:  self.dyn.load_module(self.Scripts_List.currentItem().text()))
         self.Save_btn.clicked.connect(self.dyn.save_script)
         #-------- slots -----------
@@ -55,32 +52,47 @@ class GUI(QMainWindow, UI):
 
     def launch_lsl(self):
         self.Streamings_List.clear()
-        for inlet in self.lsl.create_lsl():#~ aqui hay que comprobar si ya los teníamos en la lista, diccionarios??
+        for inlet in self.lsl.create_lsl():
             item = QtGui.QListWidgetItem(inlet.info().name())
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             item.setCheckState(Qt.Unchecked)
             self.Streamings_List.addItem(item)
+            
+    def main_recording(self):
+        if self.monitors:
+            for monitor in self.monitors:
+                monitor.run(('RECORD'))
         
     def launch_monitor(self):
         if not self.monitors and self.lsl.inlets:
+            # -- check inlets selected ---
             self.inlets = []
             for inlet, index in zip(self.lsl.inlets, range(len(self.lsl.inlets))):
                 if self.Streamings_List.item(index).checkState():
                     self.inlets.append( inlet )
-            
+            # -- run data acquirer ---
             self.acq = data_acquirer(self.inlets)
-            self.acq.set_up(8, 1500, 250)
+            self.acq.set_up()  
             self.acq.start()
-            
-            for inlet, buffer, counter, recording in zip(self.acq.buffers['inlet'], self.acq.buffers['buffer'], self.acq.buffers['counter'], self.acq.buffers['recording']):
-                self.monitors.append( EEG_monitor_wrapper(inlet.info(), buffer, counter, recording) )
-            print('create', self.monitors, self.inlets)
+            # --- run monitors to visualice signals ----
+            for i in range(len(self.acq.buffers['inlet'])):
+                if self.acq.buffers['inlet'][i].info().type() == 'EEG':
+                    self.monitors.append( EEG_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
+                                                              self.acq.buffers['counter'][i], self.acq.buffers['streaming'][i], 
+                                                              self.acq.buffers['active'][i]) )    
+                elif self.acq.buffers['inlet'][i].info().type() == 'video':
+                    print('paso')
+                    self.monitors.append( VIDEO_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
+                                                              self.acq.buffers['counter'][i], self.acq.buffers['streaming'][i], 
+                                                              self.acq.buffers['active'][i]) )
         else:
-            self.acq.kill()
-            [monitor.closeEvent(None) for monitor in self.monitors]
+            #---- kill data acquirer and close all activef monitors -----
+            for monitor in self.monitors:
+                try:
+                    monitor.closeEvent(None) 
+                except:
+                    print('No monitor!!')
             self.monitors=[]
-            print('killing', self.monitors, self.inlets)
-                
         
     def launch_trigger_server(self):
         if self.trigger_server_activated:
@@ -97,17 +109,6 @@ class GUI(QMainWindow, UI):
             else:
                 del self.trigger_server
                 self.TCPIP_checkBox.setChecked(False)
-                
-    def main_recording(self, action):
-        if self.monitors:
-            for monitor in self.monitors:
-                monitor.run(action)
-        elif self.lsl.inlets:
-            for inlet, i in zip(self.lsl.inlets, range(0,len(self.lsl.inlets))):
-                if self.Streamings_List.item(i).checkState():
-                    monitor = EEG_monitor_wrapper(inlet)
-                    monitor.run(action)
-                    self.monitors.append(monitor)
         
     def saveFileDialog(self):    
         options = QFileDialog.Options()

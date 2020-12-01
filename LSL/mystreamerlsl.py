@@ -1,17 +1,11 @@
-'''
-  streamerlsl.py
-  ---------------
+# -*- coding: utf-8 -*-
+"""
+@author: %(Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos)
+@email: %(mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com)
+@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
+@DOI: 
+"""
 
-  This is the module that handles the creation and function of LSL using OpenBCI data.
-  
-  If the GUI application is used, the GUI controls the parameters of the stream, and calls
-  the functions of this class to create, run, and stop each stream instance.
-
-  If the command line application is used, this module creates the LSL instances
-  using default parameters, and then allows the user interaction with the stream via the CLI.
-
-
-'''
 from PyQt5 import QtCore 
 
 from pylsl import StreamInlet, resolve_stream
@@ -24,7 +18,7 @@ class StreamerLSL(QtCore.QThread):
 
     def create_lsl(self):
         self.inlets = []
-        streams = resolve_stream('type', 'EEG')
+        streams = resolve_stream()
 
         if streams:
             self.inlets = [StreamInlet(stream) for stream in streams]

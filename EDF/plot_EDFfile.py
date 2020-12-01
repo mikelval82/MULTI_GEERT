@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-@author: %(Mikel Val Calvo)s
-@email: %(mikel1982mail@gmail.com)
-@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED))
-@DOI: 10.5281/zenodo.3759306 
+@author: %(Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos)
+@email: %(mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com)
+@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
+@DOI: 
 """
 
 from __future__ import division, print_function, absolute_import

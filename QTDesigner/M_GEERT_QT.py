@@ -139,7 +139,7 @@ class Ui_M_GEERT(object):
 
     def retranslateUi(self, M_GEERT):
         _translate = QtCore.QCoreApplication.translate
-        M_GEERT.setWindowTitle(_translate("M_GEERT", "SIGNALINO"))
+        M_GEERT.setWindowTitle(_translate("M_GEERT", "MULTI_GEERT"))
         self.Experiment_btn.setText(_translate("M_GEERT", "Experiment"))
         self.MainRecord_btn.setText(_translate("M_GEERT", "Record"))
         self.groupBox.setTitle(_translate("M_GEERT", "Lab Streaming Layer"))

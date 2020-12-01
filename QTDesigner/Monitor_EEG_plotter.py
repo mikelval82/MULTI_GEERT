@@ -68,8 +68,12 @@ class Monitor_EEG_plotter(pg.GraphicsWindow):
             
     def normalize(self, sample):
         return (sample-np.mean(sample))/np.std(sample)
+    
+    def remove_lines(self):
+        if self.lines['lines']:
+            for line in self.lines['lines']:
+                self.plotter.removeItem(line)
         
-
     def update(self, sample):
         sample = self.normalize(sample) 
         self.plotter.getAxis('left').setTicks([[(pos, channel) for pos,channel in zip(self.positions, self.channels) ]])

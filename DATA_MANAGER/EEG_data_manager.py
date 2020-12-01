@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-@author: %(Mikel Val Calvo)s
-@email: %(mikel1982mail@gmail.com)
-@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED))
+@author: %(Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos)
+@email: %(mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com)
+@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
 @DOI: 
 """
 import numpy as np
 
-class data_manager(object):
+class EEG_data_manager(object):
     
-    def __init__(self, num_channels, win_size, srate):
+    def __init__(self, num_channels=8, win_size=1500, srate=250):
         # --- constants -----
         self.num_channels = num_channels
         self.srate = srate
@@ -30,7 +30,7 @@ class data_manager(object):
         self.win_size = win_size
         self.data = np.zeros((self.num_channels,self.win_size))
         self.filtered = np.zeros((self.num_channels,self.win_size))
-        self.stream_data = []
+        self.stream_data = {'samples':[], 'timestamps':[]}
         self.cur = 0
         
     def append(self, sample, timestamp):
@@ -47,7 +47,7 @@ class data_manager(object):
         return list(self.data)
     
     def get_stream(self):
-        return np.asarray(self.stream_data)
+        return np.asarray(self.stream_data['samples'])
         
     def set_filtered(self,x):
         self.filtered = x
