@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'M_GEERT_QT.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -45,6 +45,9 @@ class Ui_M_GEERT(object):
         self.Activate_btn = QtWidgets.QPushButton(self.groupBox)
         self.Activate_btn.setObjectName("Activate_btn")
         self.horizontalLayout_2.addWidget(self.Activate_btn)
+        self.Hide_btn = QtWidgets.QPushButton(self.groupBox)
+        self.Hide_btn.setObjectName("Hide_btn")
+        self.horizontalLayout_2.addWidget(self.Hide_btn)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.Streamings_List = QtWidgets.QListWidget(self.groupBox)
         self.Streamings_List.setTabletTracking(False)
@@ -139,12 +142,13 @@ class Ui_M_GEERT(object):
 
     def retranslateUi(self, M_GEERT):
         _translate = QtCore.QCoreApplication.translate
-        M_GEERT.setWindowTitle(_translate("M_GEERT", "MULTI_GEERT"))
+        M_GEERT.setWindowTitle(_translate("M_GEERT", "SIGNALINO"))
         self.Experiment_btn.setText(_translate("M_GEERT", "Experiment"))
         self.MainRecord_btn.setText(_translate("M_GEERT", "Record"))
         self.groupBox.setTitle(_translate("M_GEERT", "Lab Streaming Layer"))
         self.ResolveStreaming_btn.setText(_translate("M_GEERT", "Resolve Streaming"))
         self.Activate_btn.setText(_translate("M_GEERT", "Activate"))
+        self.Hide_btn.setText(_translate("M_GEERT", "Hide"))
         self.groupBox_4.setTitle(_translate("M_GEERT", "TCP/IP Remote Control"))
         self.TCPIP_checkBox.setText(_translate("M_GEERT", "Trigger Server"))
         self.Host_LineEdit.setText(_translate("M_GEERT", "localhost"))

@@ -42,6 +42,7 @@ class GUI(QMainWindow, UI):
         self.Port_LineEdit.textChanged.connect(lambda: self.constants.update('PORT', self.Port_LineEdit.text()))
         self.ResolveStreaming_btn.clicked.connect(self.launch_lsl)
         self.Activate_btn.clicked.connect(self.launch_monitor)
+        self.Hide_btn.clicked.connect(self.hide)
         self.Run_btn.clicked.connect(lambda:  self.dyn.load_module(self.Scripts_List.currentItem().text()))
         self.Save_btn.clicked.connect(self.dyn.save_script)
         #-------- slots -----------
@@ -76,9 +77,11 @@ class GUI(QMainWindow, UI):
             # --- run monitors to visualice signals ----
             for i in range(len(self.acq.buffers['inlet'])):
                 if self.acq.buffers['inlet'][i].info().type() == 'EEG':
-                    self.monitors.append( EEG_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
+                    monitor = EEG_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
                                                               self.acq.buffers['counter'][i], self.acq.buffers['streaming'][i], 
-                                                              self.acq.buffers['active'][i]) )    
+                                                              self.acq.buffers['active'][i])
+                    monitor.show()
+                    self.monitors.append( monitor )    
         else:
             #---- kill data acquirer and close all activef monitors -----
             for monitor in self.monitors:
@@ -87,6 +90,20 @@ class GUI(QMainWindow, UI):
                 except:
                     print('No monitor!!')
             self.monitors=[]
+            
+    def hide(self):
+        if self.monitors:
+            for monitor in self.monitors:
+                if monitor.is_shown:
+                    monitor.hide()
+                    monitor.is_shown = False
+                    self.Hide_btn.setStyleSheet('QPushButton {background-color: #424242; color: #fff;}')
+                    self.Hide_btn.setText('Show')
+                elif not monitor.is_shown:
+                    monitor.show()
+                    monitor.is_shown = True
+                    self.Hide_btn.setStyleSheet('QPushButton {background-color: #transparent; color: #ff732d;}')
+                    self.Hide_btn.setText('Hide')
         
     def launch_trigger_server(self):
         if self.trigger_server_activated:

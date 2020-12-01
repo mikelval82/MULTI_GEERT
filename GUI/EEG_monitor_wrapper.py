@@ -24,13 +24,13 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         #---- GUI setup ----------
         self.setupUi(self)
         self.setWindowTitle(inlet.info().name())      
-        self.show()
         # --- buffer related data structures ----
         self.inlet = inlet
         self.buffer = buffer
         self.counter = counter
         self.streaming = streaming
         self.active = active
+        self.is_shown = True
         #--- global params -----
         self.name = self.inlet.info().name()
         self.srate = int(self.inlet.info().nominal_srate())
@@ -87,7 +87,6 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.actionQuit.triggered.connect(QtWidgets.QApplication.quit)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)    
 
-  
     def run(self, action):
         if action == 'SHOW' and not self.streaming.value:
             self.EEG_monitor.remove_lines()

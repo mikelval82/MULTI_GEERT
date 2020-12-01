@@ -2,7 +2,7 @@
 """
 @author: %(Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos)
 @email: %(mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com)
-@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
+@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Biomedical Neuroengineering Research Group (UMH); Biomedical Neuroengineering Research Group (UMH) ) 
 @DOI: 
 """
 from GUI.M_GEERT_gui import GUI 
