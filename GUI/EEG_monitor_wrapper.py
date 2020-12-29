@@ -29,6 +29,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.buffer = buffer
         self.counter = counter
         self.streaming = streaming
+        self.recording = False
         self.active = active
         self.is_shown = True
         #--- global params -----
@@ -86,32 +87,99 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.actionQuit = QtWidgets.QAction("Quit", self)
         self.actionQuit.triggered.connect(QtWidgets.QApplication.quit)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)    
-
+        
     def run(self, action):
-        if action == 'SHOW' and not self.streaming.value:
+        print(self.streaming.value, self.recording, action)
+        
+        if not self.streaming.value and not self.recording and action == 'SHOW':
+            print('state 1 to state 2')
+            self.streaming.value = True
+            
             self.EEG_monitor.remove_lines()
             self.event.set()
             self.timer.start(self.refresh_rate)
-        elif action == 'SHOW' and self.streaming.value:
-            self.event.clear()
-            self.timer.stop()
-            self.buffer.reset(self.win_size)
-        elif action == 'RECORD' and not self.streaming.value:
-            self.io.create_file()
+            
+        elif not self.streaming.value and not self.recording and action == 'RECORD':
+            print('state 1 to state 3')
+            self.streaming.value = True
+            self.recording = True
+            
             self.EEG_monitor.remove_lines()
-            self.event.set()
             self.buffer.set_recording(True)
-            self.io.online_annotation(action, self.buffer.get_current_instant())
-            self.timer.start(self.refresh_rate)
-        elif action == 'RECORD' and self.streaming.value:
+            try:
+                self.io.create_file()
+                self.io.online_annotation(action, self.buffer.get_current_instant())
+            except:
+                print('Cannot create user data file')
+            finally:
+                self.event.set()
+                self.timer.start(self.refresh_rate)
+        
+        elif self.streaming.value and not self.recording and action == 'SHOW':
+            print('state 2 to state 1')
+            self.streaming.value = False
+            
             self.event.clear()
             self.timer.stop()
-            self.io.online_annotation(action, self.buffer.get_current_instant())
-            self.io.append_to_file(self.buffer.get_stream())
-            self.io.close_file()
             self.buffer.reset(self.win_size)
-            self.buffer.set_recording(False)
-        self.streaming.value = not self.streaming.value
+            
+        elif self.streaming.value and not self.recording and action == 'RECORD':
+            print('state 2 to state 3')
+            self.recording = True
+            
+            self.buffer.set_recording(True)
+            try:
+                self.io.create_file()
+                self.io.online_annotation(action, self.buffer.get_current_instant())
+            except:
+                print('Cannot create user data file')
+
+        elif self.streaming.value and self.recording:
+            print('state 3 to state 1')
+            self.streaming.value = False
+            self.recording = False
+            
+            self.event.clear()
+            self.timer.stop()
+            try:
+                self.io.online_annotation(action, self.buffer.get_current_instant())
+                self.io.append_to_file(self.buffer.get_stream())
+                self.io.close_file()
+            except:
+                print('Cannot close user data file')
+            finally:
+                self.buffer.reset(self.win_size)
+                self.buffer.set_recording(False)     
+            
+        
+            
+#
+#    def run(self, action):
+#        if action == 'SHOW' and not self.streaming.value:
+#            self.EEG_monitor.remove_lines()
+#            self.event.set()
+#            self.timer.start(self.refresh_rate)
+#        elif action == 'SHOW' and self.streaming.value:
+#            self.event.clear()
+#            self.timer.stop()
+#            self.buffer.reset(self.win_size)
+#        elif action == 'RECORD' and not self.streaming.value:
+#            self.EEG_monitor.remove_lines()
+#            self.event.set()
+#            self.buffer.set_recording(True)
+#            self.io.create_file()
+#            self.io.online_annotation(action, self.buffer.get_current_instant())
+#            self.timer.start(self.refresh_rate)
+#        elif action == 'RECORD' and self.streaming.value:
+#            self.event.clear()
+#            self.timer.stop()
+#            self.io.online_annotation(action, self.buffer.get_current_instant())
+#            self.io.append_to_file(self.buffer.get_stream())
+#            self.io.close_file()
+#            self.buffer.reset(self.win_size)
+#            self.buffer.set_recording(False)
+#            
+#        self.streaming.value = not self.streaming.value
 
     def get_labels(self, elem):
         if elem.tag == 'label':
