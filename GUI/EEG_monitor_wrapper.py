@@ -150,36 +150,6 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             finally:
                 self.buffer.reset(self.win_size)
                 self.buffer.set_recording(False)     
-            
-        
-            
-#
-#    def run(self, action):
-#        if action == 'SHOW' and not self.streaming.value:
-#            self.EEG_monitor.remove_lines()
-#            self.event.set()
-#            self.timer.start(self.refresh_rate)
-#        elif action == 'SHOW' and self.streaming.value:
-#            self.event.clear()
-#            self.timer.stop()
-#            self.buffer.reset(self.win_size)
-#        elif action == 'RECORD' and not self.streaming.value:
-#            self.EEG_monitor.remove_lines()
-#            self.event.set()
-#            self.buffer.set_recording(True)
-#            self.io.create_file()
-#            self.io.online_annotation(action, self.buffer.get_current_instant())
-#            self.timer.start(self.refresh_rate)
-#        elif action == 'RECORD' and self.streaming.value:
-#            self.event.clear()
-#            self.timer.stop()
-#            self.io.online_annotation(action, self.buffer.get_current_instant())
-#            self.io.append_to_file(self.buffer.get_stream())
-#            self.io.close_file()
-#            self.buffer.reset(self.win_size)
-#            self.buffer.set_recording(False)
-#            
-#        self.streaming.value = not self.streaming.value
 
     def get_labels(self, elem):
         if elem.tag == 'label':
