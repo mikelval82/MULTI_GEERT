@@ -77,7 +77,7 @@ class GUI(QMainWindow, UI):
             # --- run monitors to visualice signals ----
             for i in range(len(self.acq.buffers['inlet'])):
                 if self.acq.buffers['inlet'][i].info().type() == 'EEG':
-                    monitor = EEG_monitor_wrapper(self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
+                    monitor = EEG_monitor_wrapper(self.log, self.acq.buffers['inlet'][i], self.acq.buffers['buffer'][i], 
                                                               self.acq.buffers['counter'][i], self.acq.buffers['streaming'][i], 
                                                               self.acq.buffers['active'][i])
                     monitor.show()

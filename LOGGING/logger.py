@@ -10,12 +10,15 @@ from PyQt5 import QtGui, QtCore
 
 class logger():
     def __init__(self, logger):
-        self.text = ''
         self.logger = logger
         self.logger.setCenterOnScroll(True)
+        
         self.tf = QtGui.QTextCharFormat()
+        self.tf_yellow = QtGui.QTextCharFormat()
         self.tf_green = QtGui.QTextCharFormat()
         self.tf_red = QtGui.QTextCharFormat()
+        
+        self.tf_yellow.setForeground(QtGui.QBrush(QtCore.Qt.yellow))
         self.tf_green.setForeground(QtGui.QBrush(QtCore.Qt.green))
         self.tf_red.setForeground(QtGui.QBrush(QtCore.Qt.red))
 
@@ -25,7 +28,7 @@ class logger():
         self.logger.centerCursor()
         
     def myprint_in(self, text):
-        self.logger.setCurrentCharFormat(self.tf_green)
+        self.logger.setCurrentCharFormat(self.tf_yellow)
         self.logger.appendPlainText("< "+text)
         self.logger.centerCursor()
     

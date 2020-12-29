@@ -19,12 +19,13 @@ from GUI.EEG_monitor_shortcuts_manager import EEG_shortcuts
 
 class EEG_monitor_wrapper(QMainWindow, UI):
     
-    def __init__(self, inlet, buffer, counter, streaming, active):
+    def __init__(self, log, inlet, buffer, counter, streaming, active):
         QMainWindow.__init__(self, parent=None)
         #---- GUI setup ----------
         self.setupUi(self)
         self.setWindowTitle(inlet.info().name())      
         # --- buffer related data structures ----
+        self.log = log
         self.inlet = inlet
         self.buffer = buffer
         self.counter = counter
@@ -88,11 +89,8 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.actionQuit.triggered.connect(QtWidgets.QApplication.quit)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)    
         
-    def run(self, action):
-        print(self.streaming.value, self.recording, action)
-        
+    def run(self, action):                
         if not self.streaming.value and not self.recording and action == 'SHOW':
-            print('state 1 to state 2')
             self.streaming.value = True
             
             self.EEG_monitor.remove_lines()
@@ -100,7 +98,6 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             self.timer.start(self.refresh_rate)
             
         elif not self.streaming.value and not self.recording and action == 'RECORD':
-            print('state 1 to state 3')
             self.streaming.value = True
             self.recording = True
             
@@ -109,14 +106,15 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             try:
                 self.io.create_file()
                 self.io.online_annotation(action, self.buffer.get_current_instant())
+                
+                self.log.myprint_in('File created at device: ' + self.name + ' subject: ' + self.io.fileName + ' Trial: ' + str(self.io.Trial)) 
             except:
-                print('Cannot create user data file')
+                self.log.myprint_error('Cannot create subject data file at device: ' + self.name)
             finally:
                 self.event.set()
                 self.timer.start(self.refresh_rate)
         
         elif self.streaming.value and not self.recording and action == 'SHOW':
-            print('state 2 to state 1')
             self.streaming.value = False
             
             self.event.clear()
@@ -124,18 +122,17 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             self.buffer.reset(self.win_size)
             
         elif self.streaming.value and not self.recording and action == 'RECORD':
-            print('state 2 to state 3')
             self.recording = True
             
             self.buffer.set_recording(True)
             try:
                 self.io.create_file()
                 self.io.online_annotation(action, self.buffer.get_current_instant())
+                self.log.myprint_in('File created at device: '+ self.name + ' subject: ' + self.io.fileName + ' Trial: ' + str(self.io.Trial))
             except:
-                print('Cannot create user data file')
+                self.log.myprint_error('Cannot create subject data file at device: ' + self.name)
 
         elif self.streaming.value and self.recording:
-            print('state 3 to state 1')
             self.streaming.value = False
             self.recording = False
             
@@ -145,8 +142,9 @@ class EEG_monitor_wrapper(QMainWindow, UI):
                 self.io.online_annotation(action, self.buffer.get_current_instant())
                 self.io.append_to_file(self.buffer.get_stream())
                 self.io.close_file()
+                self.log.myprint_out('File saved at device: ' + self.name + ' subject: ' + self.io.fileName + ' Trial: ' + str(self.io.Trial-1))
             except:
-                print('Cannot close user data file')
+                self.log.myprint_error('Cannot close subject data file at device: ' + self.name)
             finally:
                 self.buffer.reset(self.win_size)
                 self.buffer.set_recording(False)     
