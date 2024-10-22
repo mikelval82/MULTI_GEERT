@@ -8,12 +8,13 @@
 import pyqtgraph as pg
 import numpy as np
 
-class Monitor_Frequency_plotter(pg.GraphicsWindow):
+
+class Monitor_Frequency_plotter(pg.GraphicsLayoutWidget):  # Cambiado de GraphicsWindow a GraphicsLayoutWidget
     pg.setConfigOption('background', 'k')
     pg.setConfigOption('foreground', 'm')
-    
+
     def __init__(self, parent=None, **kargs):
-        pg.GraphicsWindow.__init__(self, **kargs)
+        super().__init__(**kargs)  # Utiliza super() para inicializar correctamente la clase heredada
         self.setParent(parent)
         self.curves = []
         self.Spectrogram_radioButton_isChecked = False

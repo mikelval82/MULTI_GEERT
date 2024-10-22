@@ -9,12 +9,13 @@ import pyqtgraph as pg
 from pyqtgraph import Point
 import numpy as np
 
-class Monitor_EEG_plotter(pg.GraphicsWindow):
+
+class Monitor_EEG_plotter(pg.GraphicsLayoutWidget):  # Cambiado de GraphicsWindow a GraphicsLayoutWidget
     pg.setConfigOption('background', 'k')
     pg.setConfigOption('foreground', 'm')
-    
+
     def __init__(self, parent=None, **kargs):
-        pg.GraphicsWindow.__init__(self, **kargs)
+        super().__init__(**kargs)  # Utiliza super() para heredar correctamente de GraphicsLayoutWidget
         self.setParent(parent)
     
     def set_params(self, channels, contador, num_channels=8, x_dim=250, y_dim=900):

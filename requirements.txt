@@ -1,0 +1,8 @@
+PyQt5
+pylsl
+pyqtgraph
+scipy
+neurodsp
+lspopt
+setuptools
+pyedflib
