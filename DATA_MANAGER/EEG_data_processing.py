@@ -53,6 +53,7 @@ class EEG_data_processing(Process):
             
             #*************** Compute Frequency Properties *********************
             if self.Spectrogram_radioButton_isChecked.value:
+
                 data = self.spectrum.get_spectrogram( filtered[self.spectrogram_channel.value,:]).T 
             else:
                 data = self.spectrum.get_spectrum(filtered)

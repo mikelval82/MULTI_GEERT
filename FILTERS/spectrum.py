@@ -26,6 +26,9 @@ class spectrum:
     
     def get_spectrogram(self, samples):
 #        _, _, Sxx = signal.spectrogram(samples, self.constants.SAMPLE_RATE)
+        samples = np.asarray(samples)
+        print('############################# samples shape: ', samples.shape)
         _,_, Sxx = spectrogram_lspopt(samples, self.SAMPLE_RATE, c_parameter=20.0)
+        print('get spectrogram -> ', Sxx)
         return Sxx
         
