@@ -6,6 +6,7 @@
 @DOI: 
 """
 from multiprocessing import Process
+
 from FILTERS.filter_bank_manager import filter_bank_class
 from FILTERS.spectrum import spectrum 
 
@@ -14,7 +15,17 @@ from FILTERS.spectrum import spectrum
 
 class EEG_data_processing(Process):
     
-    def __init__(self, event, buffer, spectrogram_channel, Spectrogram_radioButton_isChecked, srate, num_channels, order, lowcut, highcut):
+    def __init__(self,
+                 event,
+                 buffer,
+                 spectrogram_channel,
+                 Spectrogram_radioButton_isChecked,
+                 srate,
+                 num_channels,
+                 order,
+                 lowcut,
+                 highcut,
+                 filtering_method):
         Process.__init__(self)
         self.event = event
         self.spectrogram_channel = spectrogram_channel
@@ -22,7 +33,9 @@ class EEG_data_processing(Process):
         self.buffer = buffer
         self.filter_bank = filter_bank_class(srate, order, lowcut, highcut)
         self.spectrum = spectrum(SAMPLE_RATE=srate, CHANNELS=num_channels)
-#        self.old = datetime.now().timestamp() * 1000
+        self.filtering_method = filtering_method  # Now it's a shared value
+
+    #        self.old = datetime.now().timestamp() * 1000
  
     def run(self):  
         while self.event.wait():
@@ -30,7 +43,11 @@ class EEG_data_processing(Process):
 #            time.sleep(1)
             #################### DEFAULT FILTERING PROCESS ####################
             sample = self.buffer.get()
-            filtered = self.default_filtering( sample )
+            if self.filtering_method.value == 'Butterworth':
+                filtered = self.default_filtering( sample )
+            else:
+                filtered = sample
+
             self.buffer.set_filtered(filtered)
             ###################################################################
             
@@ -39,6 +56,7 @@ class EEG_data_processing(Process):
                 data = self.spectrum.get_spectrogram( filtered[self.spectrogram_channel.value,:]).T 
             else:
                 data = self.spectrum.get_spectrum(filtered)
+
             self.buffer.set_spectral(data)
             #******************************************************************
 #            new = datetime.now().timestamp() * 1000

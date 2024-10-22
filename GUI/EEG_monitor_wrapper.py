@@ -5,7 +5,7 @@
 @institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
 @DOI: 
 """
-from multiprocessing import Value, Event
+from multiprocessing import Value, Event, Manager
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -47,13 +47,26 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.spectrogram_channel = Value('i',0)
         self.Spectrogram_radioButton_isChecked = Value('b',0)
         self.event = Event()
+        manager = Manager()
+        self.filtering_method = manager.Value('c', 'None')  # Shared memory for filtering method
         #---- IO -----
         self.io = io_manager()
         #-----------------------------------------------------------------------------------------------------------
         self.shortcuts = EEG_shortcuts(self)
         self.shortcuts.define_local_shortcuts(self.run, self.add_marker)
         #---- streaming processing ----
-        self.processing = EEG_data_processing(self.event, self.buffer, self.spectrogram_channel, self.Spectrogram_radioButton_isChecked, self.srate, self.num_channels, self.order, self.lowcut, self.highcut)
+        self.processing = EEG_data_processing(
+            self.event,
+            self.buffer,
+            self.spectrogram_channel,
+            self.Spectrogram_radioButton_isChecked,
+            self.srate,
+            self.num_channels,
+            self.order,
+            self.lowcut,
+            self.highcut,
+            self.filtering_method
+        )
         self.processing.start()
         #---- setup monitors ------
         self.EEG_monitor.set_params( self.channels, self.counter, num_channels=self.num_channels, x_dim=self.win_size, y_dim=(self.num_channels+1)*100)
@@ -161,6 +174,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.close()
         
     def update(self, which, param, value):
+        print('update -> ', which, param, value)
         if value != '':
             if which == 'FREQ':
                 if param == 'BAND':
@@ -183,7 +197,9 @@ class EEG_monitor_wrapper(QMainWindow, UI):
                         self.highcut.value = 30
                     elif value == 'Gamma':
                         self.lowcut.value = 30
-                        self.highcut.value = int(self.srate/2 - 1)   
+                        self.highcut.value = int(self.srate/2 - 1)
+                elif param == 'METHOD':
+                    self.processing.filtering_method.value = value
                 elif param == 'CHANNEL':
                     self.spectrogram_channel.value = value
             elif which == 'TIME':

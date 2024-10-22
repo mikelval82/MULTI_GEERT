@@ -68,7 +68,10 @@ class Monitor_EEG_plotter(pg.GraphicsLayoutWidget):  # Cambiado de GraphicsWindo
             self.curves.append( self.plotter.plot([], pen=(i,self.num_channels*1.3)) )
             
     def normalize(self, sample):
-        return (sample-np.mean(sample))/np.std(sample)
+        try:
+            return (sample-np.mean(sample))/np.std(sample)
+        except:
+            return sample
     
     def remove_lines(self):
         if self.lines['lines']:
@@ -76,7 +79,7 @@ class Monitor_EEG_plotter(pg.GraphicsLayoutWidget):  # Cambiado de GraphicsWindo
                 self.plotter.removeItem(line)
         
     def update(self, sample):
-        sample = self.normalize(sample) 
+        sample = self.normalize(sample)
         self.plotter.getAxis('left').setTicks([[(pos, channel) for pos,channel in zip(self.positions, self.channels) ]])
         #-----  draw curves ---------------------------
         for i in range(self.num_channels):

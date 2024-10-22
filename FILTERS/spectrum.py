@@ -18,6 +18,7 @@ class spectrum:
         
     def get_spectrum(self, samples):
         spectrums = []
+        samples = np.asarray(samples)  # Asegurarse de que samples es un array de NumPy
         for i in range(self.CHANNELS):
              freqs, spectre  = spectral.compute_spectrum(samples[i,:], self.SAMPLE_RATE)
              spectrums.append(spectre)

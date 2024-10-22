@@ -8,7 +8,7 @@
 import os
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.QtCore import Qt
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from QTDesigner.M_GEERT_QT import Ui_M_GEERT as UI
 from GUI.EEG_monitor_wrapper import EEG_monitor_wrapper 
 from UTILITIES.GLOBAL import constants
@@ -53,7 +53,7 @@ class GUI(QMainWindow, UI):
     def launch_lsl(self):
         self.Streamings_List.clear()
         for inlet in self.lsl.create_lsl():
-            item = QtGui.QListWidgetItem(inlet.info().name())
+            item = QtWidgets.QListWidgetItem(inlet.info().name())
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             item.setCheckState(Qt.Unchecked)
             self.Streamings_List.addItem(item)

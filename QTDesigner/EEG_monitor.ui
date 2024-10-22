@@ -104,6 +104,11 @@
         <widget class="QComboBox" name="FiletringMethod_ComboBox">
          <item>
           <property name="text">
+           <string>None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Butterworth</string>
           </property>
          </item>
