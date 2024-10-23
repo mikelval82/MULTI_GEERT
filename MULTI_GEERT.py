@@ -20,7 +20,7 @@ class MULTI_GEERT(QApplication):
         sys.exit(self.exec_())
         
     def load_style(self):        
-        with open("QTDesigner/CSS/Adaptic.qss") as f:
+        with open("QTDesigner/CSS/Genetive.qss") as f:
             self.setStyleSheet(f.read())
 
 if __name__ == '__main__':

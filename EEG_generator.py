@@ -12,36 +12,34 @@ import time
 import sys
 
 
-def generate_wave(A, B, f, t, wave_type, num_channels=8):
-    """Genera una onda cuadrada o sinusoidal según el tipo especificado."""
+def generate_wave(A, B, f, t, wave_type, phi=0, num_channels=8, noise_level=0.0):
+    """Genera una onda cuadrada o sinusoidal con una fase opcional."""
     if wave_type == 'square':
-        # Generar onda cuadrada
-        sample = [A * np.sign(np.sin(2 * np.pi * f * t)) + B for _ in range(num_channels)]
+        # Generar onda cuadrada con fase
+        # sample = [A * np.sign(np.sin(2 * np.pi * f * t + phi)) + B + noise_level * np.random.randn() for _ in range(num_channels)]
+        sample = [A * np.sign(np.sin(2 * np.pi * f * t + phi)) + B for _ in range(num_channels)]
     elif wave_type == 'sinusoidal':
-        # Generar onda sinusoidal
-        sample = [A * np.sin(2 * np.pi * f * t) + B for _ in range(num_channels)]
+        # Generar onda sinusoidal con fase
+        # sample = [A * np.sin(2 * np.pi * f * t + phi) + B + noise_level * np.random.randn() for _ in range(num_channels)]
+        sample = [A * np.sin(2 * np.pi * f * t + phi) + B for _ in range(num_channels)]
     else:
         raise ValueError("Tipo de onda no reconocido. Usa 'square' o 'sinusoidal'.")
     return sample
 
 
 def main(*args):
-    print(args, len(args))
-    if len(args[0]) < 2:
-        print("Por favor, proporciona el tipo de onda: 'square' o 'sinusoidal'.")
+    if len(args[0]) < 3:
+        print("Por favor, proporciona el tipo de onda ('square' o 'sinusoidal'), el nombre de la señal y la fase (en radianes).")
         return
 
     wave_type = args[0][0]  # Tipo de onda (square o sinusoidal)
+    stream_name = args[0][1]  # Nombre de la señal (para diferenciar los streams)
+    phi = float(args[0][2])  # Fase de la onda (en radianes)
 
-    # first create a new stream info (here we set the name to BioSemi,
-    # the content-type to EEG, 8 channels, 100 Hz, and float-valued data) The
-    # last value would be the serial number of the device or some other more or
-    # less locally unique identifier for the stream as far as available (you
-    # could also omit it but interrupted connections wouldn't auto-recover)
+    # Create stream info for the LSL outlet
+    info = StreamInfo(stream_name, 'EEG', 8, 250, 'float32', 'uid_' + stream_name)
 
-    info = StreamInfo(args[0][1], 'EEG', 8, 250, 'float32', 'myuid34234')
-    # now attach some meta-data (in accordance with XDF format,
-    # see also code.google.com/p/xdf)
+    # Add metadata for the stream
     chns = info.desc().append_child("channels")
     for label in ["C3", "C4", "Cz", "FPz", "POz", "CPz", "O1", "O2"]:
         ch = chns.append_child("channel")
@@ -53,19 +51,21 @@ def main(*args):
     cap.append_child_value("name", "EasyCap")
     cap.append_child_value("size", "54")
     cap.append_child_value("labelscheme", "10-20")
-    # next make an outlet
+
+    # Create an outlet for the monitor (stream)
     outlet = StreamOutlet(info)
 
     # Parameters for wave generation
     A = 50  # Amplitude
     B = 0  # Offset
-    f = 1  # Frequency (Hz)
+    f = 10  # Frequency (Hz) - To maintain coherence, both streams need to have the same frequency
     t = 0  # Initial time
     dt = 1 / 250  # Time step (sampling rate of 250 Hz)
+    noise_level = 2.0  # Noise level to add some variability to the signal
 
     while True:
-        # Generate the wave (square or sinusoidal)
-        sample = generate_wave(A, B, f, t, wave_type)
+        # Generate the wave (square or sinusoidal) with the provided phase
+        sample = generate_wave(A, B, f, t, wave_type, phi=phi, noise_level=noise_level)
         outlet.push_sample(sample)
         t += dt  # Increment time
         time.sleep(dt)  # Sleep for the sampling period (1/250 seconds)

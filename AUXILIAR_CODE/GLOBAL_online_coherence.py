@@ -45,45 +45,46 @@ class MyClass(QtCore.QThread):
         self.filter_bank.update_filters()
 
         # --- visualize coherence ---
-        num_pairs = 2  # Example: coherence between two pairs of channels
-        self.plotters = []
-        for _ in range(len(self.current_GUI.monitors)):
-            self.plotters.append(simple_plot(8, 10, 2, num_pairs))
+        num_pairs = 8  # One pair for each channel (e.g., channel 0 of monitor 1 with channel 0 of monitor 2)
+        self.plotter = simple_plot(8, 10, 2, num_pairs)  # Create only one plot instance for cross-monitor coherence
 
         # Parameters for coherence calculation
         self.coherence_freq = 250  # Sampling frequency of the EEG signal
         self.coherence_window = 256  # Window length for coherence calculation
-        self.channel_pairs = [(0, 1), (2, 3)]  # Example pairs of channels to compute coherence between
 
     def run(self):
         while True:
             time.sleep(.01)
             streamings = [monitor.streaming.value for monitor in self.current_GUI.monitors]
 
-            if np.all(streamings):
-                for index, monitor in enumerate(self.current_GUI.monitors):
-                    sample = monitor.buffer.get()
-                    filtered = self.myfilter(sample)
+            if len(self.current_GUI.monitors) >= 2 and np.all(streamings):
+                # Get the samples from both monitors
+                sample_1 = self.current_GUI.monitors[0].buffer.get()
+                sample_2 = self.current_GUI.monitors[1].buffer.get()
 
-                    # Coherence calculation
-                    coherence_values = self.compute_coherence(filtered)
+                # Filter the samples
+                filtered_1 = self.myfilter(sample_1)
+                filtered_2 = self.myfilter(sample_2)
 
-                    # Update plot with coherence values
-                    self.plotters[index].update(coherence_values)
+                # Coherence calculation between monitors
+                coherence_values = self.compute_coherence(filtered_1, filtered_2)
+
+                # Update the plot with coherence values
+                self.plotter.update(coherence_values)
 
     def myfilter(self, sample):
         return self.filter_bank.pre_process(sample)
 
-    def compute_coherence(self, sample):
+    def compute_coherence(self, sample_1, sample_2):
         coherence_values = []
 
-        # Iterate over the defined channel pairs
-        for ch1, ch2 in self.channel_pairs:
-            # Extract the data for the two channels
-            signal_1 = sample[ch1]
-            signal_2 = sample[ch2]
+        # Iterate over each channel to compare the same channel from monitor 1 and monitor 2
+        for ch in range(len(sample_1)):
+            # Extract the data for the corresponding channels from both monitors
+            signal_1 = sample_1[ch]
+            signal_2 = sample_2[ch]
 
-            # Compute coherence between the two channels
+            # Compute coherence between the corresponding channels of the two monitors
             f, Cxy = coherence(signal_1, signal_2, fs=self.coherence_freq, nperseg=self.coherence_window)
 
             # Store coherence values for plotting
