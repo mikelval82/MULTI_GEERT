@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 import xml.etree.ElementTree as ET
+import numpy as np
 
 from QTDesigner.EEG_monitor import Ui_EEG_Viewer as UI
 from DATA_MANAGER.EEG_data_processing import EEG_data_processing
@@ -118,6 +119,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         if not self.streaming.value and not self.recording and action == 'SHOW':
             self.streaming.value = True
             self.EEG_monitor.remove_lines()
+            self.buffer.reset(self.win_size)
             self.event.set()
             self.timer.start(self.refresh_rate)
 
@@ -126,6 +128,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             self.recording = True
             self.EEG_monitor.remove_lines()
             self.buffer.set_recording(True)
+            self.buffer.reset(self.win_size)
             try:
                 self.io.create_file()
                 # Use signal to emit annotation
@@ -141,10 +144,10 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             self.streaming.value = False
             self.event.clear()
             self.timer.stop()
-            self.buffer.reset(self.win_size)
 
         elif self.streaming.value and not self.recording and action == 'RECORD':
             self.recording = True
+            self.buffer.reset(self.win_size)
             self.buffer.set_recording(True)
             try:
                 self.io.create_file()
@@ -153,9 +156,10 @@ class EEG_monitor_wrapper(QMainWindow, UI):
             except:
                 self.log.myprint_error(f'Cannot create subject data file at device: {self.name}')
 
-        elif self.streaming.value and self.recording:
+        elif self.streaming.value and self.recording and action == 'RECORD':
             self.streaming.value = False
             self.recording = False
+            self.buffer.set_recording(False)
             self.event.clear()
             self.timer.stop()
             try:
@@ -241,7 +245,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
     def saveFileDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        self.io.fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "JSON Files (*.xdf)", options=options)
+        self.io.fileName, _ = QFileDialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "JSON Files (*.json)", options=options)
 
     def openFileNameDialog(self, btn):
         options = QFileDialog.Options()

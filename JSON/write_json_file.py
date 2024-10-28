@@ -32,7 +32,7 @@ class JSONWriter:
     def new_file(self, path):
         self.file_path = os.path.join('.', path)
         self.metadata["file_name"] = self.file_path
-        print(f"New XDF-like file created at: {self.file_path}")
+        print(f"New JSON file created at: {self.file_path}")
 
     def append(self, all_data_store):
         print(f"Appending data of shape {all_data_store.shape}")
@@ -66,10 +66,10 @@ class JSONWriter:
         }
 
         # Save the file as a .json file (this can be adapted to another format if needed)
-        with open(self.file_path.replace('.xdf', '.json'), 'w') as outfile:
+        with open(self.file_path, 'w') as outfile:
             json.dump(data_to_save, outfile, indent=4)
 
-        print(f"XDF-like file saved at: {self.file_path.replace('.xdf', '.json')}")
+        print(f"JSON file saved at: {self.file_path}")
 
     def close_file(self):
         self.metadata["end_time"] = time.time()

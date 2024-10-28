@@ -14,30 +14,36 @@ class EEG_data_manager(object):
         self.num_channels = num_channels
         self.srate = srate
         self.win_size = win_size
-        #--- data containers ---
-        self.data = np.zeros((self.num_channels,self.win_size))
-        self.filtered = np.zeros((self.num_channels,self.win_size))
+        # --- data containers ---
+        self.data = np.zeros((self.num_channels, self.win_size))
+        self.filtered = np.zeros((self.num_channels, self.win_size))
         self.spectral = None
-        self.stream_data = {'samples':[], 'timestamps':[]}
-        #----- control params ----
+        self.stream_data = {'samples': [], 'timestamps': []}
+        # ----- control params ----
         self.cur = 0
+        self.num_sample = 0
         self.recording = False
-        
+
     def set_recording(self, recording):
         self.recording = recording
                  
     def reset(self, win_size):
         self.win_size = win_size
-        self.data = np.zeros((self.num_channels,self.win_size))
-        self.filtered = np.zeros((self.num_channels,self.win_size))
-        self.stream_data = {'samples':[], 'timestamps':[]}
+        # --- data containers ---
+        self.data = np.zeros((self.num_channels, self.win_size))
+        self.filtered = np.zeros((self.num_channels, self.win_size))
+        self.spectral = None
+        self.stream_data = {'samples': [], 'timestamps': []}
+        # ----- control params ----
         self.cur = 0
-        
+        self.num_sample = 0
+
     def append(self, sample, timestamp):
         """append an element at the end of the buffer"""  
         self.cur = self.cur % self.win_size
         self.data[:,self.cur] = np.asarray(sample).transpose()
-        self.cur = self.cur+1  
+        self.cur = self.cur+1
+        self.num_sample += 1
         if self.recording:
             self.stream_data['samples'].append(np.asarray(sample).transpose())
             self.stream_data['timestamps'].append(timestamp)
@@ -62,7 +68,7 @@ class EEG_data_manager(object):
         return self.spectral
     
     def get_current_instant(self):
-        return self.cur
+        return self.num_sample
         
     
     

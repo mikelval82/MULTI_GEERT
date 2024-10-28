@@ -47,6 +47,7 @@ def open_and_plot_json(file_path):
         for annotation in annotations:
             # Convert annotation instant (samples) to time (seconds)
             ann_time = start_time + annotation["instant"] / sampling_rate
+            print(annotation)
             event_label = annotation["event"]
             plt.axvline(x=ann_time, color='r', linestyle='--', label=f'Annotation: {event_label}')
             plt.text(ann_time, plt.ylim()[1], event_label, rotation=90, color='red')
