@@ -13,35 +13,6 @@ The `MULTI_GEERT` application provides a user-friendly interface for monitoring 
 **Real-Time Parallel EEG data processing**:
   - The application supports real-time processing of EEG data from multiple devices in parallel.
 
-## Monitor Features
-- **User Interface Elements**:
-  - Text Inputs for setting filter order and window size.
-  - Combo Boxes for selecting frequency range, filtering method, and channels.
-  - Radio Buttons for toggling between different modes (e.g., spectrogram mode).
-  - Buttons for adding markers and quitting the application.
-  - Sliders for adjusting the scale and space of the EEG display.
-  - Scroll Bars for vertical scrolling of the EEG display.
-
-- **Data Handling**:
-  - Streaming and recording of EEG data.
-  - Buffer management for storing EEG data.
-  - File operations for creating, appending, and closing files.
-  - Annotations and markers for EEG data.
-
-- **Visualization**:
-  - Timer-based visualization for periodic updates of EEG and frequency monitors.
-  - Spectrogram and frequency monitoring.
-
-- **Event Handling**:
-  - Signal connections for updating parameters, adding markers, and handling file operations.
-  - Custom event handlers for annotations and file saving.
-
-- **Mode Selection**:
-  - Spectrogram mode for different visualization modes.
-
-- **File Dialogs**:
-  - Save and open file dialogs.
-
 ## Installation
 To install the required dependencies, run:
 ```bash
@@ -53,6 +24,34 @@ To run the application, execute:
 ```bash
 python MULTI_GEERT.py
 ```
+
+### EEG Generator Module
+
+The `EEG_generator.py` module is responsible for generating synthetic EEG data for testing purposes. This is useful for simulating EEG data streams when real EEG devices are not available or for testing the system under controlled conditions. The module can generate different types of synthetic signals, such as sinusoidal or square waves, and stream this data using the Lab Streaming Layer (LSL) protocol.
+
+#### Features
+- **Signal Generation**: Create synthetic EEG signals, including sinusoidal or square waves.
+- **Real-Time Streaming**: Stream the generated data in real-time using the LSL protocol.
+- **Customizable Parameters**: Adjust signal type, frequency, amplitude, sampling rate, and number of channels.
+
+#### Usage
+To generate and stream synthetic EEG data, execute the following command:
+
+```bash
+python EEG_generator.py [signal_type] [stream_name] [phase]
+```
+
+- `signal_type`: Type of signal to generate (`sinusoidal` or `square`).
+- `stream_name`: Name of the stream of the simulated signal.
+- `phase`: Phase of the signal in radians (default is 0).
+
+Example:
+
+```bash
+python EEG_generator.py sinusoidal sim_1 0
+```
+
+This command will generate a sinusoidal EEG signal called sim_1 with a phase of 0 radians and stream it using the LSL protocol.
 
 ## Contributing
 1. Fork the repository.
