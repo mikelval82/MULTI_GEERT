@@ -32,11 +32,12 @@ class GUI(QMainWindow, UI):
         self.lsl.log_emitter.connect(self.log.myprint)
         #-------- Monitors List ---
         self.monitors = []
+        self.inlets = []
         #-------- controls --------
         self.trigger_server_activated = False
         #-------- connections ----
         self.Experiment_btn.clicked.connect(self.saveFileDialog)
-        self.MainRecord_btn.clicked.connect(self.main_recording)
+        self.MainRecord_btn.clicked.connect(lambda: self.action_manager('RECORD'))
         self.TCPIP_checkBox.toggled.connect(self.launch_trigger_server)
         self.Host_LineEdit.textChanged.connect(lambda: self.constants.update('ADDRESS', self.Host_LineEdit.text()))
         self.Port_LineEdit.textChanged.connect(lambda: self.constants.update('PORT', self.Port_LineEdit.text()))
@@ -57,11 +58,16 @@ class GUI(QMainWindow, UI):
             item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled | Qt.ItemIsSelectable)
             item.setCheckState(Qt.Unchecked)
             self.Streamings_List.addItem(item)
-            
-    def main_recording(self):
+
+        # Highlight and select the first item (optional)
+        if self.Streamings_List.count() > 0:
+            self.Streamings_List.setCurrentRow(0)  # Selects the first item
+
+
+    def action_manager(self, action):
         if self.monitors:
             for monitor in self.monitors:
-                monitor.run(('RECORD'))
+                monitor.run(action)
         
     def launch_monitor(self):
         if not self.monitors and self.lsl.inlets:
@@ -113,7 +119,7 @@ class GUI(QMainWindow, UI):
         else:
             self.trigger_server = trigger_server(self.constants)
             self.trigger_server.log_emitter.connect(self.log.myprint_out)
-            self.trigger_server.socket_emitter.connect(self.main_recording)
+            self.trigger_server.socket_emitter.connect(self.action_manager)
             self.trigger_server_activated = self.trigger_server.create_socket()
             if self.trigger_server_activated:
                 self.trigger_server.start()  

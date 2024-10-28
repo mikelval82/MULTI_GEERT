@@ -10,7 +10,7 @@
 import socket
 import sys
 
-class trigger_client():
+class TriggerClient:
     def __init__(self, address, port):
         self.address = address
         self.port = port

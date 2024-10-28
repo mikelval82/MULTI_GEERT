@@ -316,67 +316,75 @@ QDockWidget::float-button:hover
 
 }
 
-
 /*-----QTreeWidget-----*/
-QTreeWidget
-{
-	show-decoration-selected: 0;
-	selection-background-color: transparent; /* Used on Mac */
-	selection-color: #fff; /* Used on Mac */
-	background-color: #292929;
-	border: 1px solid #3a3a3a;
-	padding: 5px;
-	color: #fff;
-	font-weight: bold;
-	font-size: 11px;
-
+QTreeWidget {
+    show-decoration-selected: 0;
+    selection-background-color: transparent; /* Used on Mac */
+    selection-color: #fff; /* Used on Mac */
+    background-color: #292929;
+    border: 1px solid #3a3a3a;
+    padding: 5px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 11px;
 }
 
-
-QTreeView::disabled
-{
-	color: #656565;
-
+QTreeView::disabled {
+    color: #656565;
 }
 
-
-QTreeView::item:selected
-{
-	color: #000;
-	background-color: #ff732d;
-
+/* Improved visibility for QTreeView items */
+QTreeView::item {
+    background-color: #333; /* Default background */
+    color: #fff;
+    padding: 4px;
 }
 
-
-QTreeView::item:!selected:hover
-{
-	background-color: #424242;
-	color: #fff;
+QTreeView::item:selected {
+    background-color: #ff732d; /* Highlight selected item */
+    color: #000; /* Text color for better contrast */
 }
 
-
-QTreeView::item:selected:disabled
-{
-	background-color: #656565;
-	color: #333;
-
+QTreeView::item:!selected:hover {
+    background-color: #555555; /* Hover effect for better visibility */
+    color: #fff;
 }
 
+/* Customize checkbox appearance in QTreeView/QTreeWidget */
+QTreeView::indicator, QTreeWidget::indicator {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #ff732d; /* Orange border for checkbox */
+    background-color: #292929; /* Background color when unchecked */
+}
 
+QTreeView::indicator:checked, QTreeWidget::indicator:checked {
+    background-color: #ff732d; /* Orange background when checked */
+    border: 1px solid #ff732d; /* Orange border when checked */
+}
+
+QTreeView::indicator:unchecked:hover, QTreeWidget::indicator:unchecked:hover {
+    border: 1px solid #ff732d; /* Orange border on hover */
+}
+
+/* Disabled item styling */
+QTreeView::item:selected:disabled {
+    background-color: #656565;
+    color: #333;
+}
+
+/* Branch icons */
 QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings 
-{
-	image: url(://tree-closed.png);
-
+QTreeView::branch:closed:has-children:has-siblings {
+    image: url(://tree-closed.png);
 }
-
 
 QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings  
-{
-	image: url(://tree-open.png);
-
+QTreeView::branch:open:has-children:has-siblings {
+    image: url(://tree-open.png);
 }
+
+
 
 
 /*-----QLineEdit-----*/

@@ -173,6 +173,9 @@ class EEG_monitor_wrapper(QMainWindow, UI):
                 self.buffer.reset(self.win_size)
                 self.buffer.set_recording(False)
 
+        elif self.streaming.value and action not in ['SHOW', 'RECORD']:
+            self.add_marker(action)
+
     def handle_annotation(self, event, instant, duration):
         """Handle the annotation safely."""
         self.io.online_annotation(event, instant, duration)
