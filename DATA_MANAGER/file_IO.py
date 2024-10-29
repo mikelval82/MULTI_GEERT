@@ -14,7 +14,7 @@ from multiprocessing import Process
 class io_manager:
 
     def __init__(self, monitor_ID):
-        self.fileName = monitor_ID
+        self.fileName = './Data/' + monitor_ID
         self.Trial = 0
         self.file_created = False
         self.json = None

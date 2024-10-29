@@ -10,6 +10,7 @@ from multiprocessing import Process
 from FILTERS.filter_bank_manager import filter_bank_class
 from FILTERS.spectrum import spectrum 
 
+import numpy as np
 #from datetime import datetime
 #import time
 
@@ -46,18 +47,18 @@ class EEG_data_processing(Process):
             if self.filtering_method.value == 'Butterworth':
                 filtered = self.default_filtering( sample )
             else:
-                filtered = sample
+                filtered = np.asarray(sample)
 
             self.buffer.set_filtered(filtered)
             ###################################################################
             
             #*************** Compute Frequency Properties *********************
             if self.Spectrogram_radioButton_isChecked.value:
-
-                data = self.spectrum.get_spectrogram( filtered[self.spectrogram_channel.value,:]).T 
+                data = self.spectrum.get_spectrogram( filtered[self.spectrogram_channel.value,:]).T
             else:
                 data = self.spectrum.get_spectrum(filtered)
 
+            print('processing: spectrogram checked -> ', self.Spectrogram_radioButton_isChecked.value, ' data: ', data)
             self.buffer.set_spectral(data)
             #******************************************************************
 #            new = datetime.now().timestamp() * 1000

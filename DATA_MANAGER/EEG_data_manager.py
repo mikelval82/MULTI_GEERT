@@ -7,6 +7,7 @@
 """
 import numpy as np
 
+
 class EEG_data_manager(object):
     
     def __init__(self, num_channels=8, win_size=1500, srate=250):
@@ -55,13 +56,13 @@ class EEG_data_manager(object):
     def get_stream(self):
         return np.asarray(self.stream_data['samples'])
         
-    def set_filtered(self,x):
+    def set_filtered(self, x):
         self.filtered = x
         
     def get_filtered(self):
         return self.filtered
         
-    def set_spectral(self,x):
+    def set_spectral(self, x):
         self.spectral = x
         
     def get_spectral(self):

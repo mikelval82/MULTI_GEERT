@@ -16,12 +16,10 @@ def generate_wave(A, B, f, t, wave_type, phi=0, num_channels=8, noise_level=0.0)
     """Genera una onda cuadrada o sinusoidal con una fase opcional."""
     if wave_type == 'square':
         # Generar onda cuadrada con fase
-        # sample = [A * np.sign(np.sin(2 * np.pi * f * t + phi)) + B + noise_level * np.random.randn() for _ in range(num_channels)]
-        sample = [A * np.sign(np.sin(2 * np.pi * f * t + phi)) + B for _ in range(num_channels)]
+        sample = [A * np.sign(np.sin(2 * np.pi * f * t + phi)) + B + noise_level * np.random.randn() for _ in range(num_channels)]
     elif wave_type == 'sinusoidal':
         # Generar onda sinusoidal con fase
-        # sample = [A * np.sin(2 * np.pi * f * t + phi) + B + noise_level * np.random.randn() for _ in range(num_channels)]
-        sample = [A * np.sin(2 * np.pi * f * t + phi) + B for _ in range(num_channels)]
+        sample = [A * np.sin(2 * np.pi * f * t + phi) + B + noise_level * np.random.randn() for _ in range(num_channels)]
     else:
         raise ValueError("Tipo de onda no reconocido. Usa 'square' o 'sinusoidal'.")
     return sample
@@ -61,7 +59,7 @@ def main(*args):
     f = 10  # Frequency (Hz) - To maintain coherence, both streams need to have the same frequency
     t = 0  # Initial time
     dt = 1 / 250  # Time step (sampling rate of 250 Hz)
-    noise_level = 2.0  # Noise level to add some variability to the signal
+    noise_level = 20.0  # Noise level to add some variability to the signal
 
     while True:
         # Generate the wave (square or sinusoidal) with the provided phase

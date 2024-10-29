@@ -240,7 +240,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
 
     def visualize(self):
         self.EEG_monitor.update(self.buffer.get_filtered())
-        self.Frequency_monitor.update(self.buffer.get_spectral())
+        self.Frequency_monitor.update_spectrum(self.buffer.get_spectral())
 
     def select_mode(self):
         self.Spectrogram_radioButton_isChecked.value = self.Spectrogram_radioButton.isChecked()

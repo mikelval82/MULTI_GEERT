@@ -6,3 +6,4 @@ neurodsp
 lspopt
 setuptools
 pyedflib
+numpy

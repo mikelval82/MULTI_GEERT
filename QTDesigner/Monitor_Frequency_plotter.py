@@ -62,9 +62,14 @@ class Monitor_Frequency_plotter(pg.GraphicsLayoutWidget):  # Cambiado de Graphic
             self.create_fft_plot()    
             self.Spectrogram_radioButton_isChecked = False
 
-    def update(self, sample):
-        if self.Spectrogram_radioButton_isChecked:
-            self.spectrogram_Img.setImage(np.asarray(sample), autoLevels=True)
-        else:
-            for i in range(self.num_channels):
-                self.curves[i].setData(np.asarray(sample[0]),np.log10(np.asarray(sample[1])[i,:])) 
+    def update_spectrum(self, sample):
+        try:
+            if self.Spectrogram_radioButton_isChecked:
+                self.spectrogram_Img.setImage(sample, autoLevels=True)
+            else:
+                for i in range(self.num_channels):
+                    self.curves[i].setData(np.asarray(sample[0]),np.log10(np.asarray(sample[1])[i,:]))
+        except Exception as e:
+            print('Error in update_spectrum: ', e)
+            print(sample)
+            pass
