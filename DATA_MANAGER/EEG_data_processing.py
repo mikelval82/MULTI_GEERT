@@ -58,7 +58,6 @@ class EEG_data_processing(Process):
             else:
                 data = self.spectrum.get_spectrum(filtered)
 
-            print('processing: spectrogram checked -> ', self.Spectrogram_radioButton_isChecked.value, ' data: ', data)
             self.buffer.set_spectral(data)
             #******************************************************************
 #            new = datetime.now().timestamp() * 1000

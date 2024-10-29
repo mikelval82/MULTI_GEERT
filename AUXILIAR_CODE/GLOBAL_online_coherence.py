@@ -54,7 +54,7 @@ class MyClass(QtCore.QThread):
 
     def run(self):
         while True:
-            time.sleep(.01)
+            time.sleep(.1)
             streamings = [monitor.streaming.value for monitor in self.current_GUI.monitors]
 
             if len(self.current_GUI.monitors) >= 2 and np.all(streamings):
