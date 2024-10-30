@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
-from FILTERS.filter_bank_manager import filter_bank_class
+from FILTERS.filter_bank_manager import FilterBank
 from multiprocessing import Value
 import pyqtgraph as pg
 import numpy as np
@@ -41,7 +41,7 @@ class MyClass(QtCore.QThread):
         super(MyClass, self).__init__(None)
         self.current_GUI = current_GUI
         # --- filter example --
-        self.filter_bank = filter_bank_class(250, Value('i', 5), Value('i', 5), Value('i', 10))
+        self.filter_bank = FilterBank(250, Value('i', 5), Value('i', 5), Value('i', 10))
         self.filter_bank.update_filters()
 
         # --- visualize coherence ---

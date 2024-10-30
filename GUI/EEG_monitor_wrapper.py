@@ -219,6 +219,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
                     elif value == 'Gamma':
                         self.lowcut.value = 30
                         self.highcut.value = int(self.srate / 2 - 1)
+
                 elif param == 'METHOD':
                     self.processing.filtering_method.value = value
                 elif param == 'CHANNEL':

@@ -2,10 +2,10 @@ import numpy as np
 from scipy.signal import butter, iirnotch, filtfilt
 
 
-class filter_bank_class:
+class FilterBank:
     def __init__(self, srate, order, lowcut, highcut):
-        self.LOWCUT = lowcut
-        self.HIGHCUT = highcut
+        self.LOWCUT = lowcut  # This is a multiprocessing.Value
+        self.HIGHCUT = highcut  # This is a multiprocessing.Value
         self.ORDER = order
         self.SAMPLE_RATE = srate
         self.NOTCH = 50
@@ -15,9 +15,21 @@ class filter_bank_class:
         self.b0, self.a0 = self.notch_filter()
         self.b, self.a = self.butter_bandpass()
 
+    def update_cutoffs(self, lowcut, highcut):
+        """
+        Updates the lowcut and highcut values and reinitializes the filters.
+
+        Args:
+            lowcut (float): New lowcut frequency.
+            highcut (float): New highcut frequency.
+        """
+        self.LOWCUT.value = lowcut
+        self.HIGHCUT.value = highcut
+        self._initialize_filters()  # Reinitialize filters with new cutoffs
+
     def pre_process(self, sample):
         sample = np.array(sample)
-        sample -= np.mean(sample, axis=1, keepdims=True)  # Vectorized mean subtraction
+        sample -= np.mean(sample, axis=1, keepdims=True)
         if self.LOWCUT.value is not None and self.HIGHCUT.value is not None:
             sample = self.butter_bandpass_filter(sample)
         return sample
@@ -28,7 +40,7 @@ class filter_bank_class:
 
     def butter_bandpass(self):
         nyq = 0.5 * self.SAMPLE_RATE
-        low, high = self.LOWCUT.value / nyq, self.HIGHCUT.value / nyq
+        low, high = self.LOWCUT.value / nyq, self.HIGHCUT.value / nyq  # Access .value here
         return butter(self.ORDER.value, [low, high], btype='band')
 
     def butter_bandpass_filter(self, data):

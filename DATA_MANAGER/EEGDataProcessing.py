@@ -1,20 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-@author: Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos
-@email: mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com
-@institution: Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED);
-              Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain;
-              Neuroengineering medical group (UMH)
-"""
-
-from multiprocessing import Process
-from FILTERS.filter_bank_manager import filter_bank_class
+from FILTERS.filter_bank_manager import FilterBank
 from FILTERS.spectrum import Spectrum
 import numpy as np
-
+from multiprocessing import Process
 
 class EEGDataProcessing(Process):
-
     def __init__(self,
                  event,
                  buffer,
@@ -31,12 +20,20 @@ class EEGDataProcessing(Process):
         self.spectrogram_channel = spectrogram_channel
         self.spectrogram_checked = spectrogram_checked
         self.buffer = buffer
-        self.filter_bank = filter_bank_class(srate, order, lowcut, highcut)
+        self.filter_bank = FilterBank(srate, order, lowcut, highcut)
         self.spectrum = Spectrum(sample_rate=srate, channels=num_channels)
         self.filtering_method = filtering_method
+        # Initialize to track changes
+        self.last_lowcut = lowcut.value
+        self.last_highcut = highcut.value
+        self.lowcut = lowcut
+        self.highcut = highcut
 
     def run(self):
         while self.event.wait():
+            # Update filter parameters if needed
+            self.update_filter_params()
+
             sample = self.buffer.get()  # Get data from buffer
 
             # Apply filtering if the method is Butterworth
@@ -51,6 +48,13 @@ class EEGDataProcessing(Process):
                              self.spectrum.get_spectrum(sample))
 
             self.buffer.set_spectral(spectral_data)  # Update buffer with spectral data
+
+    def update_filter_params(self):
+        """Check for updates in lowcut and highcut and reinitialize filters if changed."""
+        if self.lowcut.value != self.last_lowcut or self.highcut.value != self.last_highcut:
+            self.filter_bank.update_cutoffs(self.lowcut.value, self.highcut.value)
+            self.last_lowcut = self.lowcut.value
+            self.last_highcut = self.highcut.value
 
     def default_filtering(self, data):
         """
