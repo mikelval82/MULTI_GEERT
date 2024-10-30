@@ -51,7 +51,7 @@ class EEG_data_manager(object):
             
     def get(self):
         """ Return a list of elements from the oldest to the newest. """
-        return list(self.data)
+        return self.data
     
     def get_stream(self):
         return np.asarray(self.stream_data['samples'])

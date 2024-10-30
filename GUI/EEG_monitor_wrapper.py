@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 
 from QTDesigner.EEG_monitor import Ui_EEG_Viewer as UI
-from DATA_MANAGER.EEG_data_processing import EEG_data_processing
+from DATA_MANAGER.EEGDataProcessing import EEGDataProcessing
 from DYNAMIC.dynamic import dynamic
 from DATA_MANAGER.file_IO import io_manager
 from GUI.EEG_monitor_shortcuts_manager import EEG_shortcuts
@@ -59,7 +59,7 @@ class EEG_monitor_wrapper(QMainWindow, UI):
         self.file_save_signal.connect(self.handle_file_save)  # Connect signal to handle file save
 
         #---- streaming processing ----
-        self.processing = EEG_data_processing(
+        self.processing = EEGDataProcessing(
             self.event,
             self.buffer,
             self.spectrogram_channel,
