@@ -42,7 +42,6 @@ class MyClass(QtCore.QThread):
         self.current_GUI = current_GUI
         # --- filter example --
         self.filter_bank = FilterBank(250, Value('i', 5), Value('i', 5), Value('i', 10))
-        self.filter_bank.update_filters()
 
         # --- visualize coherence ---
         num_pairs = 8  # One pair for each channel (e.g., channel 0 of monitor 1 with channel 0 of monitor 2)
@@ -54,7 +53,6 @@ class MyClass(QtCore.QThread):
 
     def run(self):
         while True:
-            time.sleep(.1)
             streamings = [monitor.streaming.value for monitor in self.current_GUI.monitors]
 
             if len(self.current_GUI.monitors) >= 2 and np.all(streamings):
