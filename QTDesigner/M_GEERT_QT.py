@@ -1,4 +1,12 @@
 # -*- coding: utf-8 -*-
+"""
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
+"""
+
+# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'M_GEERT_QT.ui'
 #

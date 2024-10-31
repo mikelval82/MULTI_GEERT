@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
+"""
+
 from multiprocessing import Value, Event, Manager
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5 import QtCore

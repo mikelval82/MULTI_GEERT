@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
+"""
+
 from FILTERS.filter_bank_manager import FilterBank
 from FILTERS.spectrum import Spectrum
 import numpy as np

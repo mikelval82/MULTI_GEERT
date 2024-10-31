@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
+"""
+
 import sys
 import os
 import traceback  # Importamos traceback para capturar el error detallado

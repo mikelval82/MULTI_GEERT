@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
+"""
+
 import numpy as np
 from scipy.signal import butter, iirnotch, filtfilt
 

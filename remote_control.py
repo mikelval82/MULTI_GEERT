@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
+"""
+
 # Import the trigger_client class
 from COM.trigger_client import TriggerClient  # Replace with the actual filename if different
 

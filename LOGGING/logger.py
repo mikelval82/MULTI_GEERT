@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-@author: %(Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos)
-@email: %(mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com)
-@institution: %(Dpto. de Inteligencia Artificial, Universidad Nacional de Educación a Distancia (UNED); Center for Biomedical Technology, Universidad Politécnica, Madrid, Spain; Neuroengineering medical group (UMH) ) 
-@DOI: 
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
 """
+
 #%%
 from PyQt5 import QtGui, QtCore
 

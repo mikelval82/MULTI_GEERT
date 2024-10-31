@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-@file: EEG_generator.py
-@description: Generador de señales de EEG (ondas cuadradas, sinusoidales o chirp con ruido opcional).
-@author: Mikel Val Calvo, Juan Antonio Barios Heredero, Arturo Bertomeu-Motos
-@contact: mikel1982mail@gmail.com, juan.barios@gmail.com, arturobm90@gmail.com
-@institution: Dpto. de Inteligencia Artificial, UNED; Center for Biomedical Technology, UPM; Neuroengineering medical group, UMH
-@DOI:
+@author: Mikel Val Calvo
+@email: mvalcal1@upv.edu.es
+@institution: Instituto Universitario de Investigación en Tecnología Centrada en el Ser Humano,
+              Universitat Politècnica de València, València, Spain
 """
 
 from pylsl import StreamInfo, StreamOutlet
